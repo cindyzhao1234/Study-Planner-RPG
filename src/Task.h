@@ -7,4 +7,5 @@ struct Task{
     bool completed = false;
     Color color = BLACK;
     int fontSize = 12;
+    int taskHeight = 60;
 };
