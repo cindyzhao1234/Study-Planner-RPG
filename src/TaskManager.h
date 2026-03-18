@@ -8,6 +8,10 @@ class TaskManager{
         void InitTaskPanel(); //create the task manager window
         void DrawTaskPanel();
         void DrawTasks();
+        void DrawTaskText();
+
+        std::vector<std::string> WrapText(const std::string& text, int maxWidth, int fontSize);
+
         void AddTask(const Task& task);
         // void addTask(std::string taskDescription); //create the task
         // void toggleComplete(Task& task); //ticks the checkbox
@@ -17,6 +21,7 @@ class TaskManager{
         float TotalTaskHeight();
 
         void UpdateScroll();
+        void UpdateTaskToggle();
 
         std::vector<Task> getTaskList();
 
@@ -29,6 +34,8 @@ class TaskManager{
         float taskAreaWidth, taskAreaHeight;
         float taskAreaX, taskAreaY;
         float padding;
+
+        float checkboxWidth, checkboxHeight;
 
         bool scrollEnabled = false;
         float scrollOffset;
