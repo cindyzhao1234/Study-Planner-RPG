@@ -4,9 +4,11 @@
 #include "./src/TaskManager.h"
 #include <iostream>
 #include "./src/Assets.h"
+#include "./src/Inventory.h"
 
 int main(){
     TaskManager taskManager;
+    Inventory inventory;
     Assets assets;
     taskManager.AddTask({"Study for quiz and clean room and watch lec", false});
     taskManager.AddTask({"Study for quiz1", false});
@@ -42,6 +44,9 @@ int main(){
 
         ClearBackground(RAYWHITE);
 
+        inventory.DrawButton();
+        inventory.UpdateButton();
+        inventory.DrawPopup();
         taskManager.DrawTaskPanel();
         taskManager.DrawTasks();
         DrawTextureEx(assets.coinTexture, Vector2{1000, 20}, 0.0f, 1.0f, WHITE);

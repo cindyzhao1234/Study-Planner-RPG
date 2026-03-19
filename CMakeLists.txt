@@ -10,6 +10,7 @@ add_executable(StudyPlanner
     main.cpp
     src/TaskManager.cpp
     src/Assets.cpp
+    src/Inventory.cpp
 )
 
 target_link_libraries(StudyPlanner PRIVATE raylib)
