@@ -21,14 +21,18 @@ void Inventory::UpdateButton() {
     }
 }
 
-void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRenderer& characterRenderer) {
-    if (!isOpen) {
+void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRenderer& characterRenderer){
+    if(!isOpen){
         return;
     }
 
     popupBox = {200.0f, 100.0f, 880.0f, 520.0f};
-    DrawRectangle((int)popupBox.x, (int)popupBox.y,
-                  (int)popupBox.width, (int)popupBox.height, BLUE);
+    DrawRectangle(
+        (int)popupBox.x,
+        (int)popupBox.y,
+        (int)popupBox.width,
+        (int)popupBox.height, BLUE
+    );
 
     float innerPadding = 20.0f;
     float slotSize = 60.0f;
@@ -60,7 +64,7 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
     DrawText("Accessories", (int)accessoriesPanel.x + 10, (int)accessoriesPanel.y + 10, 20, BLACK);
     DrawText("Preview", (int)previewPanel.x + 10, (int)previewPanel.y + 10, 20, BLACK);
 
-    // Draw base character in preview panel
+    // ---- preview character ----
     float maxWidth = previewPanel.width - 40;
     float maxHeight = previewPanel.height - 40;
 
@@ -80,30 +84,68 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
 
     characterRenderer.DrawCharacter(user, assets, dest);
 
-    // Draw accessory slots
-    for (int i = 0; i < (int)accessoriesList.size(); i++) {
-        int row = i / columns;
-        int col = i % columns;
+    // ---- sidebar filter buttons ----
+    float sidebarX = accessoriesPanel.x + 20;
+    float sidebarY = accessoriesPanel.y + 60;
 
-        float slotX = accessoriesPanel.x + 20 + col * (slotSize + slotSpacing);
-        float slotY = accessoriesPanel.y + 40 + row * (slotSize + slotSpacing);
+    allFilter = {sidebarX, sidebarY, 50, 50};
+    hatFilter = {sidebarX, sidebarY + 60, 50, 50};
+    hairFilter = {sidebarX, sidebarY + 120, 50, 50};
+    topFilter = {sidebarX, sidebarY + 180, 50, 50};
+    bottomFilter = {sidebarX, sidebarY + 240, 50, 50};
+
+    Color allColor = (selectedCategory == "all") ? YELLOW : LIGHTGRAY;
+    Color hatColor = (selectedCategory == "hat") ? YELLOW : LIGHTGRAY;
+    Color hairColor = (selectedCategory == "hair") ? YELLOW : LIGHTGRAY;
+    Color topColor = (selectedCategory == "top") ? YELLOW : LIGHTGRAY;
+    Color bottomColor = (selectedCategory == "bottom") ? YELLOW : LIGHTGRAY;
+
+    DrawRectangleRec(allFilter, allColor);
+    DrawRectangleRec(hatFilter, hatColor);
+    DrawRectangleRec(hairFilter, hairColor);
+    DrawRectangleRec(topFilter, topColor);
+    DrawRectangleRec(bottomFilter, bottomColor);
+
+    DrawRectangleLines((int)allFilter.x, (int)allFilter.y, (int)allFilter.width, (int)allFilter.height, BLACK);
+    DrawRectangleLines((int)hatFilter.x, (int)hatFilter.y, (int)hatFilter.width, (int)hatFilter.height, BLACK);
+    DrawRectangleLines((int)hairFilter.x, (int)hairFilter.y, (int)hairFilter.width, (int)hairFilter.height, BLACK);
+    DrawRectangleLines((int)topFilter.x, (int)topFilter.y, (int)topFilter.width, (int)topFilter.height, BLACK);
+    DrawRectangleLines((int)bottomFilter.x, (int)bottomFilter.y, (int)bottomFilter.width, (int)bottomFilter.height, BLACK);
+
+    DrawText("ALL", (int)allFilter.x + 8, (int)allFilter.y + 15, 14, BLACK);
+    DrawText("HAT", (int)hatFilter.x + 8, (int)hatFilter.y + 15, 14, BLACK);
+    DrawText("HAIR", (int)hairFilter.x + 4, (int)hairFilter.y + 15, 14, BLACK);
+    DrawText("TOP", (int)topFilter.x + 8, (int)topFilter.y + 15, 14, BLACK);
+    DrawText("BOT", (int)bottomFilter.x + 8, (int)bottomFilter.y + 15, 14, BLACK);
+
+    // ---- accessory slots ----
+    int visibleIndex = 0;
+
+    for(int i = 0; i < (int)accessoriesList.size(); i++){
+        if(selectedCategory != "all" && accessoriesList[i].category != selectedCategory){
+            continue;
+        }
+
+        int row = visibleIndex / columns;
+        int col = visibleIndex % columns;
+
+        float slotX = accessoriesPanel.x + 100 + col * (slotSize + slotSpacing);
+        float slotY = accessoriesPanel.y + 60 + row * (slotSize + slotSpacing);
 
         Rectangle itemSlot = {slotX, slotY, slotSize, slotSize};
 
-        Color slotColour = RED;
-        if (accessoriesList[i].equipped) {
-            slotColour = GREEN;
-        }
+        Color slotColour = accessoriesList[i].equipped ? GREEN : RED;
 
         DrawRectangle((int)itemSlot.x, (int)itemSlot.y,
                       (int)itemSlot.width, (int)itemSlot.height, slotColour);
 
-        // Optional: show first letter of item name
         DrawText(accessoriesList[i].name.c_str(),
                  (int)itemSlot.x + 5,
                  (int)itemSlot.y + 20,
                  10,
                  BLACK);
+
+        visibleIndex++;
     }
 }
 
@@ -112,6 +154,33 @@ void Inventory::UpdatePopup(User& user) {
         return;
     }
 
+    // ---- filter button clicks ----
+    if(CheckCollisionPointRec(GetMousePosition(), allFilter) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        selectedCategory = "all";
+        return;
+    }
+
+    if (CheckCollisionPointRec(GetMousePosition(), hatFilter) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        selectedCategory = "hat";
+        return;
+    }
+
+    if (CheckCollisionPointRec(GetMousePosition(), hairFilter) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        selectedCategory = "hair";
+        return;
+    }
+
+    if (CheckCollisionPointRec(GetMousePosition(), topFilter) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        selectedCategory = "top";
+        return;
+    }
+
+    if (CheckCollisionPointRec(GetMousePosition(), bottomFilter) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        selectedCategory = "bottom";
+        return;
+    }
+
+    // ---- item slot clicks ----
     float innerPadding = 20.0f;
     float slotSize = 60.0f;
     float slotSpacing = 15.0f;
@@ -124,55 +193,65 @@ void Inventory::UpdatePopup(User& user) {
         popupBox.height - 80
     };
 
-    for (int i = 0; i < (int)accessoriesList.size(); i++) {
-        int row = i / columns;
-        int col = i % columns;
+    int visibleIndex = 0;
 
-        float slotX = accessoriesPanel.x + 20 + col * (slotSize + slotSpacing);
-        float slotY = accessoriesPanel.y + 40 + row * (slotSize + slotSpacing);
+    for(int i = 0; i < (int)accessoriesList.size(); i++){
+        if(selectedCategory != "all" && accessoriesList[i].category != selectedCategory){
+            continue;
+        }
+
+        int row = visibleIndex / columns;
+        int col = visibleIndex % columns;
+
+        float slotX = accessoriesPanel.x + 100 + col * (slotSize + slotSpacing);
+        float slotY = accessoriesPanel.y + 60 + row * (slotSize + slotSpacing);
 
         Rectangle itemSlot = {slotX, slotY, slotSize, slotSize};
 
-        if (CheckCollisionPointRec(GetMousePosition(), itemSlot) &&
-            IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if(CheckCollisionPointRec(GetMousePosition(), itemSlot) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 
             std::string clickedCategory = accessoriesList[i].category;
             bool wasEquipped = accessoriesList[i].equipped;
 
-            // Unequip all items in the same category first
-            for (int j = 0; j < (int)accessoriesList.size(); j++) {
-                if (accessoriesList[j].category == clickedCategory) {
+            // Unequip all items in same category
+            for(int j = 0; j < (int)accessoriesList.size(); j++){
+                if(accessoriesList[j].category == clickedCategory){
                     accessoriesList[j].equipped = false;
                 }
             }
 
-            // If it was already equipped, leave it unequipped
-            if (wasEquipped) {
+            // Clicking again unequips
+            if(wasEquipped){
                 if (clickedCategory == "hat") {
                     user.equippedHat = "";
+                } else if (clickedCategory == "hair") {
+                    user.equippedHair = "";
                 } else if (clickedCategory == "top") {
                     user.equippedTop = "";
                 } else if (clickedCategory == "bottom") {
                     user.equippedBottom = "";
                 }
-            } else {
-                // Otherwise equip the clicked one
+            } else{
                 accessoriesList[i].equipped = true;
 
-                if (clickedCategory == "hat") {
+                if(clickedCategory == "hat"){
                     user.equippedHat = accessoriesList[i].name;
-                } else if (clickedCategory == "top") {
+                } else if(clickedCategory == "hair"){
+                    user.equippedHair = accessoriesList[i].name;
+                } else if(clickedCategory == "top"){
                     user.equippedTop = accessoriesList[i].name;
-                } else if (clickedCategory == "bottom") {
+                } else if(clickedCategory == "bottom"){
                     user.equippedBottom = accessoriesList[i].name;
                 }
             }
 
             return;
         }
+
+        visibleIndex++;
     }
 }
 
-void Inventory::AddAccessory(const Accessories& accessory) {
+void Inventory::AddAccessory(const Accessories& accessory){
     accessoriesList.push_back(accessory);
 }

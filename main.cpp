@@ -52,7 +52,7 @@ int main(){
         ClearBackground(RAYWHITE);
         Rectangle dest = {
             (float)screenWidth / 2 - 224,
-            (float)screenHeight / 2 - 224,
+            (float)screenHeight / 2 - 100,
             assets.characterTexture.width * 7.0f,
             assets.characterTexture.height * 7.0f
         };

@@ -15,10 +15,20 @@ public:
 
     void AddAccessory(const Accessories& accessory);
 
+    Rectangle GetAccessoriesPanel() const;
+    Rectangle GetPreviewPanel() const;
+    Rectangle GetFilterRect(const std::string& category) const;
+    Rectangle GetAccessorySlotRect(int visibleIndex, Rectangle accessoriesPanel) const;
+    bool MatchesFilter(const Accessories& accessory) const;
+
 private:
     bool isOpen = false;
     Rectangle inventoryButton;
     Rectangle popupBox;
 
     std::vector<Accessories> accessoriesList;
+
+    std::string selectedCategory = "all";
+
+    Rectangle allFilter, topFilter, hairFilter, hatFilter, bottomFilter;
 };

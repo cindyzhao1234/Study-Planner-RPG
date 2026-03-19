@@ -7,4 +7,5 @@ struct User {
     std::string equippedHat = "";
     std::string equippedTop = "";
     std::string equippedBottom = "";
+    std::string equippedHair = "";
 };
