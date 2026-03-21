@@ -7,4 +7,5 @@ struct Accessories {
     int price = 0;
     bool owned = false;
     bool equipped = false;
+    bool enoughCoins = false;
 };

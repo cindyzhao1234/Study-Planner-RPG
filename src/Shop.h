@@ -13,7 +13,7 @@ public:
     void UpdateButton();
 
     void DrawPopup(std::vector<Accessories>& allItems);
-    void UpdatePopup(std::vector<Accessories>& allItems);
+    void UpdatePopup(std::vector<Accessories>& allItems, User& user);
 
 private:
 
@@ -27,6 +27,11 @@ private:
     Rectangle shopButton;
     Rectangle buyButton;
     bool isOpen = false;
+
+    std::string popupMessage;
+    float popupMessageTimer;
+
+    bool enoughCoins = false;
 
     std::vector<Accessories> shopItems;
 };

@@ -40,7 +40,7 @@ Rectangle TaskManager::GetTaskDeleteRect(float currentY, int maxWidth){
     };
 }
 
-int TaskManager::GetCoinCount(){
+int TaskManager::GetCoinCount(User& user){
     return user.CoinCount;
 }
 
@@ -274,7 +274,7 @@ void TaskManager::UpdateScroll(){
 
 // ---------- Checkbox toggle ----------
 
-void TaskManager::UpdateTaskToggle(){
+void TaskManager::UpdateTaskToggle(User& user){
     float currentY = taskAreaY - scrollOffset;
 
     for(int i = 0; i < (int)taskList.size(); i++){
@@ -289,6 +289,7 @@ void TaskManager::UpdateTaskToggle(){
         if(CheckCollisionPointRec(GetMousePosition(), checkbox) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             taskList[i].completed = true;
             user.CoinCount ++;
+            std::cout << "User Coin Coint: "<< user.CoinCount << "\n";
             std::cout << "Task checkbox clicked\n";
         }
 

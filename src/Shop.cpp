@@ -1,5 +1,7 @@
 #include "Shop.h"
+#include "User.h"
 #include <format>
+#include <iostream>
 
 void Shop::DrawButton() {
     shopButton = {1100.0f, 200.0f, 50.0f, 50.0f};
@@ -151,9 +153,13 @@ void Shop::DrawPopup(std::vector<Accessories>& allItems) {
             DrawText(TextFormat("Buy: %d coins", allItems[selectedItemIndex].price), buyButton.x + 10, buyButton.y + 10, 16, BLACK);
         }
     }
+
+    if(popupMessageTimer > 0){
+        DrawText(popupMessage.c_str(), popupBox.x + 200, popupBox.y + 100, 20, GREEN);
+    }
 }
 
-void Shop::UpdatePopup(std::vector<Accessories>& allItems) {
+void Shop::UpdatePopup(std::vector<Accessories>& allItems, User& user) {
     if (!isOpen) {
         return;
     }
@@ -218,10 +224,25 @@ void Shop::UpdatePopup(std::vector<Accessories>& allItems) {
             return;
         }
 
-        if(CheckCollisionPointRec(GetMousePosition(), buyButton) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        visibleIndex++;
+    }
+
+    if(CheckCollisionPointRec(GetMousePosition(), buyButton) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        if(user.CoinCount >= allItems[selectedItemIndex].price){
             allItems[selectedItemIndex].owned = true;
+            user.CoinCount -= allItems[selectedItemIndex].price;
+            popupMessage = "SUCCESS!";
+            popupMessageTimer = 1.0f;
+    
+        } else{
+            std::cout << "Price: " << allItems[selectedItemIndex].price << "\n";
+            std::cout << "User Coin Coint: " << user.CoinCount << "\n";
+            popupMessage = "NOT ENOUGH COINS";
+            popupMessageTimer = 1.0f;
         }
 
-        visibleIndex++;
+    }
+    if(popupMessageTimer > 0){
+        popupMessageTimer = popupMessageTimer - GetFrameTime();
     }
 }

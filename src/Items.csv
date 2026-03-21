@@ -1,8 +1,8 @@
-name,category,price,owned,equipped
-Blue Hat,hat,10,true,false
-Blue Dress,top,20,true,false
-Black Pants,bottom,15,true,false
-Red Hat,hat,30,false,false
-Brown Hair,hair,25,false,false
-Pink Top,top,40,false,false
-White Skirt,bottom,35,false,false
+name,category,price,owned,equipped,enoughCoins
+Blue Hat,hat,5,true,false,false
+Blue Dress,top,10,true,false,false
+Black Pants,bottom,5,true,false,false
+Red Hat,hat,5,false,false,false
+Brown Hair,hair,5,false,false,false
+Pink Top,top,10,false,false,false
+White Skirt,bottom,5,false,false,false

@@ -18,13 +18,13 @@ public:
     void UpdateAddButton();
     void UpdateTaskInput();
     void UpdateScroll();
-    void UpdateTaskToggle();
+    void UpdateTaskToggle(User& user);
     void DeleteTask();
 
     float HeightNeeded();
     float TotalTaskHeight();
 
-    int GetCoinCount();
+    int GetCoinCount(User& user);
 
 private:
     std::vector<Task> taskList;
@@ -50,5 +50,5 @@ private:
     Rectangle GetTaskCheckboxRect(float currentY);
     Rectangle GetTaskDeleteRect(float currentY, int maxWidth);
 
-    User user;
+    // User user;
 };

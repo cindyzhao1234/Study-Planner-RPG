@@ -40,7 +40,7 @@ int main(){
     while(!WindowShouldClose()){
 
         taskManager.UpdateScroll();
-        taskManager.UpdateTaskToggle();
+        taskManager.UpdateTaskToggle(user);
         taskManager.UpdateAddButton();
         taskManager.UpdateTaskInput();
         taskManager.DeleteTask();
@@ -61,7 +61,7 @@ int main(){
         taskManager.DrawTaskPanel();
         taskManager.DrawTasks();
         DrawTextureEx(assets.coinTexture, Vector2{1000, 20}, 0.0f, 1.0f, WHITE);
-        DrawText(TextFormat("%d", taskManager.GetCoinCount()), 1040, 27, 20, BLACK);
+        DrawText(TextFormat("%d", taskManager.GetCoinCount(user)), 1040, 27, 20, BLACK);
 
         inventory.DrawButton();
         inventory.UpdateButton();
@@ -71,7 +71,7 @@ int main(){
         shop.DrawButton();
         shop.UpdateButton();
         shop.DrawPopup(allItems);
-        shop.UpdatePopup(allItems);
+        shop.UpdatePopup(allItems, user);
 
         EndDrawing();
     }
