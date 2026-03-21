@@ -1,0 +1,8 @@
+name,category,price,owned,equipped
+Blue Hat,hat,10,true,false
+Blue Dress,top,20,true,false
+Black Pants,bottom,15,true,false
+Red Hat,hat,30,false,false
+Brown Hair,hair,25,false,false
+Pink Top,top,40,false,false
+White Skirt,bottom,35,false,false

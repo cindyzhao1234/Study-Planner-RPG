@@ -21,7 +21,7 @@ void Inventory::UpdateButton() {
     }
 }
 
-void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRenderer& characterRenderer){
+void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRenderer& characterRenderer, std::vector<Accessories>& allItems){
     if(!isOpen){
         return;
     }
@@ -72,27 +72,28 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
     float scaleY = maxHeight / (float)assets.characterTexture.height;
     float scale = std::min(scaleX, scaleY);
 
-    float drawWidth = assets.characterTexture.width * scale;
-    float drawHeight = assets.characterTexture.height * scale;
+    float previewScale = 1.15f;
+    float drawWidth = assets.characterTexture.width * scale * previewScale;
+    float drawHeight = assets.characterTexture.height * scale * previewScale;
 
-    Rectangle dest = {
+    Rectangle previewDest = {
         previewPanel.x + (previewPanel.width - drawWidth) / 2,
         previewPanel.y + (previewPanel.height - drawHeight) / 2,
         drawWidth,
         drawHeight
     };
 
-    characterRenderer.DrawCharacter(user, assets, dest);
+    characterRenderer.DrawCharacter(user, assets, previewDest);
 
     // ---- sidebar filter buttons ----
     float sidebarX = accessoriesPanel.x + 20;
     float sidebarY = accessoriesPanel.y + 60;
 
     allFilter = {sidebarX, sidebarY, 50, 50};
-    hatFilter = {sidebarX, sidebarY + 60, 50, 50};
-    hairFilter = {sidebarX, sidebarY + 120, 50, 50};
-    topFilter = {sidebarX, sidebarY + 180, 50, 50};
-    bottomFilter = {sidebarX, sidebarY + 240, 50, 50};
+    hatFilter = {sidebarX, sidebarY + 70, 50, 50};
+    hairFilter = {sidebarX, sidebarY + 140, 50, 50};
+    topFilter = {sidebarX, sidebarY + 210, 50, 50};
+    bottomFilter = {sidebarX, sidebarY + 280, 50, 50};
 
     Color allColor = (selectedCategory == "all") ? YELLOW : LIGHTGRAY;
     Color hatColor = (selectedCategory == "hat") ? YELLOW : LIGHTGRAY;
@@ -121,8 +122,12 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
     // ---- accessory slots ----
     int visibleIndex = 0;
 
-    for(int i = 0; i < (int)accessoriesList.size(); i++){
-        if(selectedCategory != "all" && accessoriesList[i].category != selectedCategory){
+    for(int i = 0; i < (int)allItems.size(); i++){
+        if (!allItems[i].owned) {
+            continue;
+        }
+    
+        if(selectedCategory != "all" && allItems[i].category != selectedCategory){
             continue;
         }
 
@@ -134,12 +139,12 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
 
         Rectangle itemSlot = {slotX, slotY, slotSize, slotSize};
 
-        Color slotColour = accessoriesList[i].equipped ? GREEN : RED;
+        Color slotColour = allItems[i].equipped ? GREEN : RED;
 
         DrawRectangle((int)itemSlot.x, (int)itemSlot.y,
                       (int)itemSlot.width, (int)itemSlot.height, slotColour);
 
-        DrawText(accessoriesList[i].name.c_str(),
+        DrawText(allItems[i].name.c_str(),
                  (int)itemSlot.x + 5,
                  (int)itemSlot.y + 20,
                  10,
@@ -149,7 +154,7 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
     }
 }
 
-void Inventory::UpdatePopup(User& user) {
+void Inventory::UpdatePopup(User& user, std::vector<Accessories>& allItems) {
     if (!isOpen) {
         return;
     }
@@ -193,10 +198,23 @@ void Inventory::UpdatePopup(User& user) {
         popupBox.height - 80
     };
 
+    float sidebarX = accessoriesPanel.x + 20;
+    float sidebarY = accessoriesPanel.y + 60;
+
+    allFilter = {sidebarX, sidebarY, 50, 50};
+    hatFilter = {sidebarX, sidebarY + 70, 50, 50};
+    hairFilter = {sidebarX, sidebarY + 140, 50, 50};
+    topFilter = {sidebarX, sidebarY + 210, 50, 50};
+    bottomFilter = {sidebarX, sidebarY + 280, 50, 50};
+
     int visibleIndex = 0;
 
-    for(int i = 0; i < (int)accessoriesList.size(); i++){
-        if(selectedCategory != "all" && accessoriesList[i].category != selectedCategory){
+    for(int i = 0; i < (int)allItems.size(); i++){
+        if (!allItems[i].owned) {
+            continue;
+        }
+    
+        if(selectedCategory != "all" && allItems[i].category != selectedCategory){
             continue;
         }
 
@@ -210,13 +228,13 @@ void Inventory::UpdatePopup(User& user) {
 
         if(CheckCollisionPointRec(GetMousePosition(), itemSlot) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 
-            std::string clickedCategory = accessoriesList[i].category;
-            bool wasEquipped = accessoriesList[i].equipped;
+            std::string clickedCategory = allItems[i].category;
+            bool wasEquipped = allItems[i].equipped;
 
             // Unequip all items in same category
-            for(int j = 0; j < (int)accessoriesList.size(); j++){
-                if(accessoriesList[j].category == clickedCategory){
-                    accessoriesList[j].equipped = false;
+            for(int j = 0; j < (int)allItems.size(); j++){
+                if(allItems[j].category == clickedCategory){
+                    allItems[j].equipped = false;
                 }
             }
 
@@ -232,16 +250,16 @@ void Inventory::UpdatePopup(User& user) {
                     user.equippedBottom = "";
                 }
             } else{
-                accessoriesList[i].equipped = true;
+                allItems[i].equipped = true;
 
                 if(clickedCategory == "hat"){
-                    user.equippedHat = accessoriesList[i].name;
+                    user.equippedHat = allItems[i].name;
                 } else if(clickedCategory == "hair"){
-                    user.equippedHair = accessoriesList[i].name;
+                    user.equippedHair = allItems[i].name;
                 } else if(clickedCategory == "top"){
-                    user.equippedTop = accessoriesList[i].name;
+                    user.equippedTop = allItems[i].name;
                 } else if(clickedCategory == "bottom"){
-                    user.equippedBottom = accessoriesList[i].name;
+                    user.equippedBottom = allItems[i].name;
                 }
             }
 
@@ -250,8 +268,4 @@ void Inventory::UpdatePopup(User& user) {
 
         visibleIndex++;
     }
-}
-
-void Inventory::AddAccessory(const Accessories& accessory){
-    accessoriesList.push_back(accessory);
 }

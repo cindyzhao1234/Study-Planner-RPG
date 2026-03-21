@@ -1,5 +1,5 @@
 #pragma once
-#include "Accessories.h"
+#include "Items.h"
 #include "CharacterRender.h"
 #include "User.h"
 #include <vector>
@@ -10,10 +10,8 @@ public:
     void DrawButton();
     void UpdateButton();
 
-    void DrawPopup(const User& user, const Assets& assets, CharacterRenderer& characterRenderer);   
-    void UpdatePopup(User& user);
-
-    void AddAccessory(const Accessories& accessory);
+    void DrawPopup(const User& user, const Assets& assets, CharacterRenderer& characterRenderer, std::vector<Accessories>& allItems);   
+    void UpdatePopup(User& user, std::vector<Accessories>& allItems);
 
     Rectangle GetAccessoriesPanel() const;
     Rectangle GetPreviewPanel() const;
@@ -21,12 +19,11 @@ public:
     Rectangle GetAccessorySlotRect(int visibleIndex, Rectangle accessoriesPanel) const;
     bool MatchesFilter(const Accessories& accessory) const;
 
+
 private:
     bool isOpen = false;
     Rectangle inventoryButton;
     Rectangle popupBox;
-
-    std::vector<Accessories> accessoriesList;
 
     std::string selectedCategory = "all";
 
