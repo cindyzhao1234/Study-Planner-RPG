@@ -83,7 +83,7 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
         drawHeight
     };
 
-    characterRenderer.DrawCharacter(user, assets, previewDest);
+    characterRenderer.DrawCharacter(user, assets, allItems, previewDest);
 
     // ---- sidebar filter buttons ----
     float sidebarX = accessoriesPanel.x + 20;

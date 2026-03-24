@@ -31,7 +31,7 @@ int main(){
 
     SetTargetFPS(60);
 
-    assets.Load();
+    assets.Load(allItems);
     taskManager.InitTaskPanel();
 
 
@@ -56,7 +56,7 @@ int main(){
             assets.characterTexture.height * 7.0f
         };
         
-        characterRenderer.DrawCharacter(user, assets, homeDest);
+        characterRenderer.DrawCharacter(user, assets, allItems, homeDest);
 
         taskManager.DrawTaskPanel();
         taskManager.DrawTasks();
