@@ -19,6 +19,8 @@ public:
     Rectangle GetAccessorySlotRect(int visibleIndex, Rectangle accessoriesPanel) const;
     bool MatchesFilter(const Accessories& accessory) const;
 
+    bool GetIsOpen();
+
 
 private:
     bool isOpen = false;

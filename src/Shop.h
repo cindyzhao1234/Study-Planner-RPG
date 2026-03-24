@@ -15,6 +15,8 @@ public:
     void DrawPopup(std::vector<Accessories>& allItems);
     void UpdatePopup(std::vector<Accessories>& allItems, User& user);
 
+    bool GetIsOpen();
+
 private:
 
 

@@ -14,6 +14,8 @@ namespace {
     constexpr float TEXT_LEFT_OFFSET = 30.0f;
     constexpr float INNER_TOP_PADDING = 10.0f;
     constexpr float DELETE_BUTTON_EXTRA_OFFSET = 40.0f;
+    constexpr float SCREEN_HEIGHT = 1024.0f;
+    constexpr float SCREEN_WIDTH = 720.0f;
 }
 
 float TaskManager::GetTaskHeight(const Task& task){

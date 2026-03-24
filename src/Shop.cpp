@@ -4,7 +4,7 @@
 #include <iostream>
 
 void Shop::DrawButton() {
-    shopButton = {1100.0f, 200.0f, 50.0f, 50.0f};
+    shopButton = {900.0f, 200.0f, 50.0f, 50.0f};
     DrawRectangleLines((int)shopButton.x, (int)shopButton.y,
                        (int)shopButton.width, (int)shopButton.height, BLACK);
 }
@@ -28,7 +28,7 @@ void Shop::DrawPopup(std::vector<Accessories>& allItems) {
         return;
     }
 
-    popupBox = {200.0f, 100.0f, 880.0f, 520.0f};
+    popupBox = {150.0f, 100.0f, 724.0f, 520.0f};
     DrawRectangle((int)popupBox.x, (int)popupBox.y,
                   (int)popupBox.width, (int)popupBox.height, RED);
 
@@ -248,4 +248,8 @@ void Shop::UpdatePopup(std::vector<Accessories>& allItems, User& user) {
     if(popupMessageTimer > 0){
         popupMessageTimer = popupMessageTimer - GetFrameTime();
     }
+}
+
+bool Shop::GetIsOpen(){
+    return isOpen;
 }

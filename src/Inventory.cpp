@@ -2,7 +2,7 @@
 #include <algorithm>
 
 void Inventory::DrawButton() {
-    inventoryButton = {1100.0f, 100.0f, 50.0f, 50.0f};
+    inventoryButton = {900.0f, 100.0f, 50.0f, 50.0f};
     DrawRectangleLines((int)inventoryButton.x, (int)inventoryButton.y,
                        (int)inventoryButton.width, (int)inventoryButton.height, BLACK);
 }
@@ -26,7 +26,7 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
         return;
     }
 
-    popupBox = {200.0f, 100.0f, 880.0f, 520.0f};
+    popupBox = {150.0f, 100.0f, 724.0f, 520.0f};
     DrawRectangle(
         (int)popupBox.x,
         (int)popupBox.y,
@@ -268,4 +268,8 @@ void Inventory::UpdatePopup(User& user, std::vector<Accessories>& allItems) {
 
         visibleIndex++;
     }
+}
+
+bool Inventory::GetIsOpen(){
+    return isOpen;
 }

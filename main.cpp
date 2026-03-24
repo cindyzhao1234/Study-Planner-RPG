@@ -24,8 +24,8 @@ int main(){
     taskManager.AddTask({"Study for quiz2", false});
     taskManager.AddTask({"Study for quiz3", false});
 
-    int screenWidth = 1280;
-    int screenHeight = 720;
+    float screenWidth = 1024.0;
+    float screenHeight = 720.0;
 
     InitWindow(screenWidth, screenHeight, "Study Plan!");
 
@@ -34,19 +34,36 @@ int main(){
     assets.Load(allItems);
     taskManager.InitTaskPanel();
 
+    
+
 
     // std::vector<Rectangle> checkboxes;
    
     while(!WindowShouldClose()){
 
-        taskManager.UpdateScroll();
-        taskManager.UpdateTaskToggle(user);
-        taskManager.UpdateAddButton();
-        taskManager.UpdateTaskInput();
-        taskManager.DeleteTask();
+        bool popupOpen = inventory.GetIsOpen() || shop.GetIsOpen();
+
+
+        inventory.UpdateButton();
+        shop.UpdateButton();
+
+        if(popupOpen){
+            
+            shop.UpdatePopup(allItems, user);
+            inventory.UpdatePopup(user, allItems);
+        } else{
+            taskManager.UpdateScroll();
+            taskManager.UpdateTaskToggle(user);
+            taskManager.UpdateAddButton();
+            taskManager.UpdateTaskInput();
+            taskManager.DeleteTask();
+        }
+
+        
+
+        
 
         BeginDrawing();
-
 
         ClearBackground(RAYWHITE);
         Rectangle homeDest = {
@@ -55,23 +72,23 @@ int main(){
             assets.characterTexture.width * 7.0f,
             assets.characterTexture.height * 7.0f
         };
+
         
         characterRenderer.DrawCharacter(user, assets, allItems, homeDest);
 
         taskManager.DrawTaskPanel();
         taskManager.DrawTasks();
-        DrawTextureEx(assets.coinTexture, Vector2{1000, 20}, 0.0f, 1.0f, WHITE);
-        DrawText(TextFormat("%d", taskManager.GetCoinCount(user)), 1040, 27, 20, BLACK);
+        DrawTextureEx(assets.coinTexture, Vector2{screenWidth - 200, 20}, 0.0f, 1.0f, WHITE);
+        DrawText(TextFormat("%d", taskManager.GetCoinCount(user)), screenWidth - 150, 27, 20, BLACK);
 
         inventory.DrawButton();
-        inventory.UpdateButton();
-        inventory.UpdatePopup(user, allItems);
+        
+        // inventory.UpdatePopup(user, allItems);
         inventory.DrawPopup(user, assets, characterRenderer, allItems);
         
         shop.DrawButton();
-        shop.UpdateButton();
         shop.DrawPopup(allItems);
-        shop.UpdatePopup(allItems, user);
+        // shop.UpdatePopup(allItems, user);
 
         EndDrawing();
     }
