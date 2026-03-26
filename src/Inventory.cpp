@@ -1,10 +1,11 @@
 #include "Inventory.h"
 #include <algorithm>
 
-void Inventory::DrawButton() {
-    inventoryButton = {900.0f, 100.0f, 50.0f, 50.0f};
-    DrawRectangleLines((int)inventoryButton.x, (int)inventoryButton.y,
-                       (int)inventoryButton.width, (int)inventoryButton.height, BLACK);
+void Inventory::DrawButton(Assets assets) {
+    inventoryButton = {900.0f, 100.0f, 75.0f, 75.0f};
+    DrawTextureEx(assets.inventoryButtonTex, {inventoryButton.x, inventoryButton.y}, 1.0f, 1.25f, WHITE);
+    // DrawRectangleLines((int)inventoryButton.x, (int)inventoryButton.y,
+    //                    (int)inventoryButton.width, (int)inventoryButton.height, BLACK);
 }
 
 void Inventory::UpdateButton() {
@@ -27,12 +28,8 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
     }
 
     popupBox = {150.0f, 100.0f, 724.0f, 520.0f};
-    DrawRectangle(
-        (int)popupBox.x,
-        (int)popupBox.y,
-        (int)popupBox.width,
-        (int)popupBox.height, BLUE
-    );
+
+    DrawTexture(assets.PopupBackground, (int)popupBox.x, (int)popupBox.y, WHITE);
 
     float innerPadding = 20.0f;
     float slotSize = 60.0f;
@@ -53,16 +50,28 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
         popupBox.height - 80
     };
 
-    DrawText("CLOSET", (int)popupBox.x + 20, (int)popupBox.y + 20, 20, BLACK);
+    DrawText("CLOSET", (int)popupBox.x + 25, (int)popupBox.y + 30, 20, BLACK);
 
-    DrawRectangleLines((int)accessoriesPanel.x, (int)accessoriesPanel.y,
-                       (int)accessoriesPanel.width, (int)accessoriesPanel.height, GREEN);
+    DrawTexturePro(
+        assets.panelTex,
+        {0, 0, (float)assets.panelTex.width, (float)assets.panelTex.height},
+        {accessoriesPanel.x, accessoriesPanel.y, accessoriesPanel.width, accessoriesPanel.height},
+        {0,0},
+        0.0,
+        WHITE
+    );
 
-    DrawRectangleLines((int)previewPanel.x, (int)previewPanel.y,
-                       (int)previewPanel.width, (int)previewPanel.height, RED);
+    DrawTexturePro(
+        assets.panelTex,
+        {0, 0, (float)assets.panelTex.width, (float)assets.panelTex.height},
+        {previewPanel.x, previewPanel.y, previewPanel.width, previewPanel.height},
+        {0,0},
+        0.0,
+        WHITE
+    );
 
-    DrawText("Accessories", (int)accessoriesPanel.x + 10, (int)accessoriesPanel.y + 10, 20, BLACK);
-    DrawText("Preview", (int)previewPanel.x + 10, (int)previewPanel.y + 10, 20, BLACK);
+    DrawText("Accessories", (int)accessoriesPanel.x + 20, (int)accessoriesPanel.y + 20, 20, BLACK);
+    DrawText("Preview", (int)previewPanel.x + 20, (int)previewPanel.y + 20, 20, BLACK);
 
     // ---- preview character ----
     float maxWidth = previewPanel.width - 40;
@@ -95,23 +104,56 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
     topFilter = {sidebarX, sidebarY + 210, 50, 50};
     bottomFilter = {sidebarX, sidebarY + 280, 50, 50};
 
-    Color allColor = (selectedCategory == "all") ? YELLOW : LIGHTGRAY;
-    Color hatColor = (selectedCategory == "hat") ? YELLOW : LIGHTGRAY;
-    Color hairColor = (selectedCategory == "hair") ? YELLOW : LIGHTGRAY;
-    Color topColor = (selectedCategory == "top") ? YELLOW : LIGHTGRAY;
-    Color bottomColor = (selectedCategory == "bottom") ? YELLOW : LIGHTGRAY;
+    Texture2D selectedAllCat = (selectedCategory == "all") ? assets.PressedFilterButton : assets.filterButton;
+    Texture2D selectedHatCat = (selectedCategory == "hat") ? assets.PressedFilterButton : assets.filterButton;
+    Texture2D selectedHairCat = (selectedCategory == "hair") ? assets.PressedFilterButton : assets.filterButton;
+    Texture2D selectedTopCat = (selectedCategory == "top") ? assets.PressedFilterButton : assets.filterButton;
+    Texture2D selectedBottomCat = (selectedCategory == "bottom") ? assets.PressedFilterButton : assets.filterButton;
 
-    DrawRectangleRec(allFilter, allColor);
-    DrawRectangleRec(hatFilter, hatColor);
-    DrawRectangleRec(hairFilter, hairColor);
-    DrawRectangleRec(topFilter, topColor);
-    DrawRectangleRec(bottomFilter, bottomColor);
+    DrawTexturePro(
+        selectedAllCat, 
+        {0, 0, (float)assets.filterButton.width, (float)assets.filterButton.height},
+        {(float)allFilter.x, (float)allFilter.y, (float)allFilter.width, (float)allFilter.height},
+        {0, 0,},
+        0.0,
+        WHITE
+    );
 
-    DrawRectangleLines((int)allFilter.x, (int)allFilter.y, (int)allFilter.width, (int)allFilter.height, BLACK);
-    DrawRectangleLines((int)hatFilter.x, (int)hatFilter.y, (int)hatFilter.width, (int)hatFilter.height, BLACK);
-    DrawRectangleLines((int)hairFilter.x, (int)hairFilter.y, (int)hairFilter.width, (int)hairFilter.height, BLACK);
-    DrawRectangleLines((int)topFilter.x, (int)topFilter.y, (int)topFilter.width, (int)topFilter.height, BLACK);
-    DrawRectangleLines((int)bottomFilter.x, (int)bottomFilter.y, (int)bottomFilter.width, (int)bottomFilter.height, BLACK);
+    DrawTexturePro(
+        selectedHatCat, 
+        {0, 0, (float)assets.filterButton.width, (float)assets.filterButton.height},
+        {(float)hatFilter.x, (float)hatFilter.y, (float)hatFilter.width, (float)hatFilter.height},
+        {0, 0,},
+        0.0,
+        WHITE
+    );
+
+    DrawTexturePro(
+        selectedHairCat, 
+        {0, 0, (float)assets.filterButton.width, (float)assets.filterButton.height},
+        {(float)hairFilter.x, (float)hairFilter.y, (float)hairFilter.width, (float)hairFilter.height},
+        {0, 0,},
+        0.0,
+        WHITE
+    );
+
+    DrawTexturePro(
+        selectedTopCat, 
+        {0, 0, (float)assets.filterButton.width, (float)assets.filterButton.height},
+        {(float)topFilter.x, (float)topFilter.y, (float)topFilter.width, (float)topFilter.height},
+        {0, 0,},
+        0.0,
+        WHITE
+    );
+
+    DrawTexturePro(
+        selectedBottomCat, 
+        {0, 0, (float)assets.filterButton.width, (float)assets.filterButton.height},
+        {(float)bottomFilter.x, (float)bottomFilter.y, (float)bottomFilter.width, (float)bottomFilter.height},
+        {0, 0,},
+        0.0,
+        WHITE
+    );
 
     DrawText("ALL", (int)allFilter.x + 8, (int)allFilter.y + 15, 14, BLACK);
     DrawText("HAT", (int)hatFilter.x + 8, (int)hatFilter.y + 15, 14, BLACK);
@@ -139,10 +181,16 @@ void Inventory::DrawPopup(const User& user, const Assets& assets, CharacterRende
 
         Rectangle itemSlot = {slotX, slotY, slotSize, slotSize};
 
-        Color slotColour = allItems[i].equipped ? GREEN : RED;
+        Texture2D selectedItemCat = allItems[i].equipped ? assets.PressedFilterButton : assets.filterButton;
 
-        DrawRectangle((int)itemSlot.x, (int)itemSlot.y,
-                      (int)itemSlot.width, (int)itemSlot.height, slotColour);
+        DrawTexturePro(
+            selectedItemCat, 
+            {0, 0, (float)assets.filterButton.width, (float)assets.filterButton.height},
+            {(float)itemSlot.x, (float)itemSlot.y, (float)itemSlot.width, (float)itemSlot.height},
+            {0, 0,},
+            0.0,
+            WHITE
+        );
 
         DrawText(allItems[i].name.c_str(),
                  (int)itemSlot.x + 5,

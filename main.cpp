@@ -34,9 +34,6 @@ int main(){
     assets.Load(allItems);
     taskManager.InitTaskPanel();
 
-    
-
-
     // std::vector<Rectangle> checkboxes;
    
     while(!WindowShouldClose()){
@@ -58,9 +55,6 @@ int main(){
             taskManager.UpdateTaskInput();
             taskManager.DeleteTask();
         }
-
-        
-
         
 
         BeginDrawing();
@@ -73,21 +67,22 @@ int main(){
             assets.characterTexture.height * 7.0f
         };
 
-        
+        DrawTexture(assets.backgroundTexture, 0, 0, WHITE);
         characterRenderer.DrawCharacter(user, assets, allItems, homeDest);
 
-        taskManager.DrawTaskPanel();
-        taskManager.DrawTasks();
+
+        taskManager.DrawTaskPanel(assets);
+        taskManager.DrawTasks(assets);
         DrawTextureEx(assets.coinTexture, Vector2{screenWidth - 200, 20}, 0.0f, 1.0f, WHITE);
         DrawText(TextFormat("%d", taskManager.GetCoinCount(user)), screenWidth - 150, 27, 20, BLACK);
 
-        inventory.DrawButton();
+        inventory.DrawButton(assets);
         
         // inventory.UpdatePopup(user, allItems);
         inventory.DrawPopup(user, assets, characterRenderer, allItems);
         
-        shop.DrawButton();
-        shop.DrawPopup(allItems);
+        shop.DrawButton(assets);
+        shop.DrawPopup(allItems, assets);
         // shop.UpdatePopup(allItems, user);
 
         EndDrawing();

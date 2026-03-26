@@ -7,7 +7,7 @@
 
 class Inventory {
 public:
-    void DrawButton();
+    void DrawButton(Assets assets);
     void UpdateButton();
 
     void DrawPopup(const User& user, const Assets& assets, CharacterRenderer& characterRenderer, std::vector<Accessories>& allItems);   

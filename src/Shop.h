@@ -9,10 +9,10 @@
 
 class Shop{
 public:
-    void DrawButton();
+    void DrawButton(Assets assets);
     void UpdateButton();
 
-    void DrawPopup(std::vector<Accessories>& allItems);
+    void DrawPopup(std::vector<Accessories>& allItems, Assets assets);
     void UpdatePopup(std::vector<Accessories>& allItems, User& user);
 
     bool GetIsOpen();

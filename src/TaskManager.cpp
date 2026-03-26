@@ -67,7 +67,14 @@ void TaskManager::InitTaskPanel(){
 
 // ---------- Panel / layout ----------
 
-void TaskManager::DrawTaskPanel(){
+void TaskManager::DrawTaskPanel(Assets assets){
+    // Set width-related layout first so wrapping/height calculations use the correct width
+    taskAreaX = panelX + padding;
+    taskAreaWidth = panelWidth - 2 * padding;
+
+    float contentStartY = panelY + headerHeight + padding;
+    float inputAreaHeight = isTypingTask ? INPUT_BOX_HEIGHT : 0.0f;
+
     float heightNeeded = HeightNeeded();
     scrollEnabled = (heightNeeded > panelHeight);
 
@@ -76,10 +83,18 @@ void TaskManager::DrawTaskPanel(){
     }
 
     Rectangle box = {(float)panelX, (float)panelY, (float)panelWidth, (float)heightNeeded};
-    DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, BLACK);
+
+    DrawTexturePro(
+        assets.mainTaskBoxTex, 
+        {0, 0, (float)assets.mainTaskBoxTex.width, (float)assets.mainTaskBoxTex.height},
+        {(float)panelX, (float)panelY, (float)panelWidth, (float)heightNeeded},
+        {0, 0},
+        0.0f,
+        WHITE
+    );
 
     Rectangle header = {(float)panelX, (float)panelY, (float)panelWidth, (float)headerHeight};
-    DrawRectangleLines((int)header.x, (int)header.y, (int)header.width, (int)header.height, MAROON);
+    DrawTexture(assets.headerTex, (int)header.x, (int)header.y, WHITE);
     DrawText("To Do List:", panelX + 20, panelY + 20, HEADER_FONT_SIZE, BLACK);
 
     float panelRight = (float)panelX + (float)panelWidth;
@@ -87,17 +102,22 @@ void TaskManager::DrawTaskPanel(){
     DrawRectangleLines((int)addButton.x, (int)addButton.y, (int)addButton.width, (int)addButton.height, RED);
     DrawText("+", (int)addButton.x + 5, (int)addButton.y, HEADER_FONT_SIZE, BLACK);
 
-    float contentStartY = panelY + headerHeight + padding;
-    float inputAreaHeight = isTypingTask ? INPUT_BOX_HEIGHT : 0.0f;
-
     if(isTypingTask){
         float inputAreaX = panelX + padding;
         float inputAreaY = contentStartY;
         float inputAreaWidth = panelWidth - 2 * padding;
 
-
         Rectangle inputArea = {inputAreaX, inputAreaY, inputAreaWidth, inputAreaHeight};
-        DrawRectangleLines((int)inputArea.x, (int)inputArea.y, (int)inputArea.width, (int)inputArea.height, GREEN);
+        DrawTexturePro(
+            assets.taskBox,
+            {0, 0, (float)assets.taskBox.width, (float)assets.taskBox.height},
+            {inputArea.x, inputArea.y, inputArea.width, inputArea.height},
+            {0, 0},
+            0.0f,
+            WHITE
+        );
+
+        // DrawRectangleLines((int)inputArea.x, (int)inputArea.y, (int)inputArea.width, (int)inputArea.height, GREEN);
 
         std::vector<std::string> wrappedText = WrapText(currentInput, (int)inputArea.width - 20, INPUT_FONT_SIZE);
         int lineHeight = INPUT_FONT_SIZE + INPUT_LINE_SPACING;
@@ -113,9 +133,7 @@ void TaskManager::DrawTaskPanel(){
         }
     }
 
-    taskAreaX = panelX + padding;
     taskAreaY = contentStartY + inputAreaHeight + (isTypingTask ? padding : 0);
-    taskAreaWidth = panelWidth - 2 * padding;
     taskAreaHeight = heightNeeded - headerHeight - 2 * padding - inputAreaHeight - (isTypingTask ? padding : 0);
 
     if(taskAreaHeight < 0){
@@ -123,12 +141,12 @@ void TaskManager::DrawTaskPanel(){
     }
 
     Rectangle taskArea = {taskAreaX, taskAreaY, taskAreaWidth, taskAreaHeight};
-    DrawRectangleLines((int)taskArea.x, (int)taskArea.y, (int)taskArea.width, (int)taskArea.height, BLUE);
+    // DrawRectangleLines((int)taskArea.x, (int)taskArea.y, (int)taskArea.width, (int)taskArea.height, BLUE);
 }
 
 // ---------- Drawing tasks ----------
 
-void TaskManager::DrawTasks(){
+void TaskManager::DrawTasks(Assets assets){
     BeginScissorMode((int)taskAreaX, (int)taskAreaY, (int)taskAreaWidth, (int)taskAreaHeight);
 
     float currentY = taskAreaY - scrollOffset;
@@ -145,19 +163,21 @@ void TaskManager::DrawTasks(){
             break;
         }
 
-        DrawRectangleLines((int)taskAreaX, (int)currentY, (int)taskAreaWidth, (int)taskHeight, GREEN);
+        DrawTexturePro(assets.taskBox, {0, 0, (float)assets.taskBox.width, (float)assets.taskBox.height}, {taskAreaX, currentY, taskAreaWidth, taskHeight}, {0, 0}, 0.0, WHITE);
+        // DrawRectangleLines((int)taskAreaX, (int)currentY, (int)taskAreaWidth, (int)taskHeight, GREEN);
 
         Rectangle checkbox = GetTaskCheckboxRect(currentY);
         DrawRectangleLines((int)checkbox.x, (int)checkbox.y, (int)checkbox.width, (int)checkbox.height, PURPLE);
 
         taskList[i].deleteTask = GetTaskDeleteRect(currentY, maxWidth);
-        DrawRectangleLines(
-            (int)taskList[i].deleteTask.x,
-            (int)taskList[i].deleteTask.y,
-            (int)taskList[i].deleteTask.width,
-            (int)taskList[i].deleteTask.height,
-            PURPLE
-        );
+        DrawTexture(assets.binTexture, (int)taskList[i].deleteTask.x, (int)taskList[i].deleteTask.y, WHITE);
+        // DrawRectangleLines(
+        //     (int)taskList[i].deleteTask.x,
+        //     (int)taskList[i].deleteTask.y,
+        //     (int)taskList[i].deleteTask.width,
+        //     (int)taskList[i].deleteTask.height,
+        //     PURPLE
+        // );
 
         if(taskList[i].completed){
             DrawText("X", (int)checkbox.x + 4, (int)checkbox.y - 2, HEADER_FONT_SIZE, BLACK);
@@ -307,7 +327,7 @@ std::vector<std::string> TaskManager::WrapText(const std::string& text, int maxW
     std::string word;
 
     while(std::getline(ss, word, ' ')){
-        if(!word.empty()) {
+        if(!word.empty()){
             words.push_back(word);
         }
     }
@@ -328,7 +348,29 @@ std::vector<std::string> TaskManager::WrapText(const std::string& text, int maxW
             if(!currentLine.empty()){
                 finishedLines.push_back(currentLine);
             }
-            currentLine = words[i];
+
+            // If the single word itself is too long, split it up
+            if(MeasureText(words[i].c_str(), fontSize) > maxWidth){
+                std::string chunk = "";
+
+                for(int j = 0; j < (int)words[i].size(); j++){
+                    std::string testChunk = chunk + words[i][j];
+
+                    if(MeasureText(testChunk.c_str(), fontSize) > maxWidth){
+                        if(!chunk.empty()){
+                            finishedLines.push_back(chunk);
+                        }
+                        chunk = std::string(1, words[i][j]);
+                    } else{
+                        chunk = testChunk;
+                    }
+                }
+
+                currentLine = chunk;
+            } else{
+                currentLine = words[i];
+            }
+
         } else{
             currentLine = testLine;
         }

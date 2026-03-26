@@ -4,13 +4,14 @@
 #include <vector>
 #include <string>
 #include "User.h"
+#include "Assets.h"
 
 
 class TaskManager {
 public:
     void InitTaskPanel();
-    void DrawTaskPanel();
-    void DrawTasks();
+    void DrawTaskPanel(Assets assets);
+    void DrawTasks(Assets assets);
 
     std::vector<std::string> WrapText(const std::string& text, int maxWidth, int fontSize);
 
