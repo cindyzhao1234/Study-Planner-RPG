@@ -6,7 +6,7 @@ A C++ game-inspired productivity app where players complete tasks to earn coins,
 
 Study Planner RPG combines a practical to-do list with a light RPG-style reward loop. Players complete tasks to earn coins, then spend those coins on cosmetic items such as hats, hairstyles, tops, and bottoms. Owned items can be equipped through an inventory popup, and the character is rendered with layered accessories on both the home screen and preview panels.
 
-I built this project to strengthen my C++ skills through a system that feels interactive and player-facing rather than purely algorithmic.
+I built this project to strengthen my C++ skills, turning a simple To-Do list concept into a system that feels interactive and game based.
 
 ## Resume Pitch
 
